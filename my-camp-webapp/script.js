@@ -1,11 +1,29 @@
-// script.js
+// script.js (отладочная версия)
 
 window.onload = function() {
-  // -- Элементы переключения вкладок
+  console.log("=== MiniApp Loaded ===");
+  console.log("User Agent:", navigator.userAgent);
+  console.log("window.Telegram:", window.Telegram);
+  console.log("window.Telegram?.WebApp:", window.Telegram?.WebApp);
+
+  // Дополнительное информативное сообщение (выведем его прямо на страницу)
+  const debugDiv = document.createElement("div");
+  debugDiv.style.backgroundColor = "#ffc";
+  debugDiv.style.padding = "10px";
+  debugDiv.style.margin = "10px 0";
+  debugDiv.style.border = "1px solid #ccc";
+  debugDiv.innerHTML = "<strong>Debug Info:</strong><br>" +
+    "UserAgent: " + navigator.userAgent + "<br>" +
+    "window.Telegram: " + (window.Telegram ? "Yes" : "No") + "<br>" +
+    "window.Telegram.WebApp: " + (window.Telegram?.WebApp ? "Yes" : "No");
+
+  document.body.insertBefore(debugDiv, document.body.firstChild);
+
+  // Переключатели вкладок
   const tabRequest = document.getElementById('tabRequest');
   const tabFAQ = document.getElementById('tabFAQ');
 
-  // -- Форма заявки
+  // Форма заявки
   const requestForm = document.getElementById('requestForm');
   const sendRequestBtn = document.getElementById('sendRequestBtn');
   const nameField = document.getElementById('childName');
@@ -13,15 +31,22 @@ window.onload = function() {
   const phoneField = document.getElementById('phone');
   const shiftSelect = document.getElementById('shift');
 
-  // -- Форма FAQ
+  // Форма FAQ
   const faqForm = document.getElementById('faqForm');
   const sendFAQBtn = document.getElementById('sendFAQBtn');
   const faqQuestion = document.getElementById('faqQuestion');
 
-  // Объект Telegram.WebApp (если открыто в телеграме)
+  // Ссылка на объект Telegram.WebApp (если доступен)
   const tg = window.Telegram?.WebApp;
 
-  // Функция переключения вкладок
+  // Сразу проверим, внутри ли Telegram
+  if (tg) {
+    console.log("✅ Telegram.WebApp найден. Работаем внутри Telegram клиента.");
+  } else {
+    console.log("❌ Telegram.WebApp не найден. Похоже, открыли во внешнем браузере.");
+  }
+
+  // Функции переключения вкладок
   function showRequestForm() {
     requestForm.style.display = 'block';
     faqForm.style.display = 'none';
@@ -31,30 +56,30 @@ window.onload = function() {
     faqForm.style.display = 'block';
   }
 
-  // При нажатии на вкладки
+  // По умолчанию — форма заявки
+  showRequestForm();
+
   tabRequest.addEventListener('click', showRequestForm);
   tabFAQ.addEventListener('click', showFAQForm);
-
-  // Запуск: по умолчанию показываем форму заявки
-  showRequestForm();
 
   // Отправка заявки
   function sendRequestToBot() {
     const data = {
-      type: "request",  // помечаем, что это заявка
+      type: "request",
       childName: nameField.value,
       childSurname: surnameField.value,
       phone: phoneField.value,
       shift: shiftSelect.value
     };
     const jsonData = JSON.stringify(data);
+    console.log("Попытка отправки заявки:", jsonData);
 
     if (tg) {
       tg.sendData(jsonData);
-      tg.close();  // Закрываем по желанию
+      tg.close();
     } else {
-      console.log("Данные для бота:", jsonData);
-      alert("Открыто вне Telegram. Откройте внутри Telegram для отправки.");
+      console.log("❌ Открыто вне Telegram. Не можем отправить.");
+      alert("Открыто вне Telegram. Для отправки откройте мини-приложение внутри официального клиента Telegram!");
     }
   }
 
@@ -65,17 +90,17 @@ window.onload = function() {
       question: faqQuestion.value
     };
     const jsonData = JSON.stringify(data);
+    console.log("Попытка отправки вопроса (FAQ):", jsonData);
 
     if (tg) {
       tg.sendData(jsonData);
       tg.close();
     } else {
-      console.log("FAQ ->", jsonData);
-      alert("Открыто вне Telegram. Откройте внутри Telegram для отправки.");
+      console.log("❌ Открыто вне Telegram. Не можем отправить.");
+      alert("Открыто вне Telegram. Для отправки откройте мини-приложение в Telegram!");
     }
   }
 
-  // Назначаем обработчики клика
   sendRequestBtn.addEventListener('click', sendRequestToBot);
   sendFAQBtn.addEventListener('click', sendFAQToBot);
 };
