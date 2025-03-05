@@ -1,42 +1,81 @@
 // script.js
 
-// Убедимся, что скрипт начнёт работать, когда DOM загрузится полностью.
-// Для простоты можно повесить обработчик загрузки на window.onload или использовать DOMContentLoaded.
 window.onload = function() {
-  // Ищем элементы
-  const sendBtn = document.getElementById('sendBtn');
+  // -- Элементы переключения вкладок
+  const tabRequest = document.getElementById('tabRequest');
+  const tabFAQ = document.getElementById('tabFAQ');
+
+  // -- Форма заявки
+  const requestForm = document.getElementById('requestForm');
+  const sendRequestBtn = document.getElementById('sendRequestBtn');
   const nameField = document.getElementById('childName');
+  const surnameField = document.getElementById('childSurname');
+  const phoneField = document.getElementById('phone');
   const shiftSelect = document.getElementById('shift');
 
-  // Объект Telegram.WebApp становится доступен только внутри Telegram-клиента,
-  // но если открыть страницу в обычном браузере, Telegram.WebApp может быть undefined.
-  // Чтобы не было ошибок, проверяем наличие tg:
+  // -- Форма FAQ
+  const faqForm = document.getElementById('faqForm');
+  const sendFAQBtn = document.getElementById('sendFAQBtn');
+  const faqQuestion = document.getElementById('faqQuestion');
+
+  // Объект Telegram.WebApp (если открыто в телеграме)
   const tg = window.Telegram?.WebApp;
 
-  // Функция отправки данных боту
-  function sendDataToBot() {
+  // Функция переключения вкладок
+  function showRequestForm() {
+    requestForm.style.display = 'block';
+    faqForm.style.display = 'none';
+  }
+  function showFAQForm() {
+    requestForm.style.display = 'none';
+    faqForm.style.display = 'block';
+  }
+
+  // При нажатии на вкладки
+  tabRequest.addEventListener('click', showRequestForm);
+  tabFAQ.addEventListener('click', showFAQForm);
+
+  // Запуск: по умолчанию показываем форму заявки
+  showRequestForm();
+
+  // Отправка заявки
+  function sendRequestToBot() {
     const data = {
+      type: "request",  // помечаем, что это заявка
       childName: nameField.value,
+      childSurname: surnameField.value,
+      phone: phoneField.value,
       shift: shiftSelect.value
     };
-
-    // Превращаем в JSON-строку
     const jsonData = JSON.stringify(data);
 
     if (tg) {
-      // Отправляем данные в бота
       tg.sendData(jsonData);
-      // Можно закрыть WebApp (не обязательно):
-      tg.close();
+      tg.close();  // Закрываем по желанию
     } else {
-      // Если страница открыта в обычном браузере (для теста),
-      // просто покажем результат в консоли
       console.log("Данные для бота:", jsonData);
-      alert("Скрипт сработал, но Telegram.WebApp не доступен в браузере. " +
-            "Откройте страницу внутри Telegram для полноценной работы.");
+      alert("Открыто вне Telegram. Откройте внутри Telegram для отправки.");
     }
   }
 
-  // Навешиваем обработчик клика на кнопку
-  sendBtn.addEventListener('click', sendDataToBot);
+  // Отправка вопроса (FAQ)
+  function sendFAQToBot() {
+    const data = {
+      type: "faq",
+      question: faqQuestion.value
+    };
+    const jsonData = JSON.stringify(data);
+
+    if (tg) {
+      tg.sendData(jsonData);
+      tg.close();
+    } else {
+      console.log("FAQ ->", jsonData);
+      alert("Открыто вне Telegram. Откройте внутри Telegram для отправки.");
+    }
+  }
+
+  // Назначаем обработчики клика
+  sendRequestBtn.addEventListener('click', sendRequestToBot);
+  sendFAQBtn.addEventListener('click', sendFAQToBot);
 };

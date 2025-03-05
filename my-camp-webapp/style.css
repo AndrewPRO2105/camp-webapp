@@ -10,10 +10,21 @@ h1 {
   margin-bottom: 10px;
 }
 
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
 .form-container {
   display: flex;
   flex-direction: column;
-  max-width: 300px;
+  max-width: 400px;
+  margin-bottom: 30px;
 }
 
 .form-container label {
@@ -21,10 +32,13 @@ h1 {
 }
 
 .form-container input,
-.form-container select {
+.form-container select,
+.form-container textarea {
   padding: 6px;
   font-size: 14px;
   margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button {
