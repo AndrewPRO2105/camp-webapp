@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Лагерь «Новое Поколение» - WebApp</title>
+  <!-- Подключаем стили -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Онлайн-заявка в лагерь</h1>
+  <p>Заполните поля ниже и отправьте данные боту:</p>
+
+  <div class="form-container">
+    <label for="childName">Имя ребёнка:</label>
+    <input type="text" id="childName" placeholder="Введите имя" />
+
+    <label for="shift">Выберите смену:</label>
+    <select id="shift">
+      <option value="june">Июнь (1-14 июня)</option>
+      <option value="july">Июль (1-14 июля)</option>
+      <option value="august">Август (1-14 августа)</option>
+    </select>
+
+    <button id="sendBtn">Отправить заявку</button>
+  </div>
+
+  <!-- Подключаем скрипт -->
+  <script src="script.js"></script>
+</body>
+</html>
