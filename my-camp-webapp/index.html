@@ -6,44 +6,40 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Онлайн-сервис «Алькадар»</h1>
+  <h1>Онлайн-заявка</h1>
+  <p>Заполните поля и отправьте данные боту:</p>
 
-  <!-- Блок переключения вкладок (заявка / FAQ) -->
   <div class="tabs">
-    <button id="tabRequest">Отправить заявку</button>
-    <button id="tabFAQ">Часто задаваемые вопросы (FAQ)</button>
+    <button id="tabTelegram">Открыть в Телеграме</button>
+    <button id="tabOutside">Открыть вне Телеграма</button>
   </div>
 
-  <!-- Форма заявки -->
-  <div id="requestForm" class="form-container">
-    <h2>Форма заявки</h2>
-    <label>Имя ребёнка:</label>
-    <input type="text" id="childName" placeholder="Введите имя" />
-
-    <label>Фамилия ребёнка:</label>
-    <input type="text" id="childSurname" placeholder="Введите фамилию" />
-
-    <label>Телефон:</label>
-    <input type="tel" id="phone" placeholder="+7..." />
-
-    <label>Выберите смену:</label>
-    <select id="shift">
-      <option value="1">1-я смена (02.06.2025-22.06.2025)</option>
-      <option value="2">2-я смена (24.06.2025-14.07.2025)</option>
-      <option value="3">3-я смена (16.07.2025-05.08.2025)</option>
-      <option value="4">4-я смена (07.08.2025-27.08.2025)</option>
+  <div id="telegramForm" class="form-container">
+    <label>Имя:</label>
+    <input type="text" id="tgName" />
+    <label>Смена:</label>
+    <select id="tgShift">
+      <option value="1">1-я смена</option>
+      <option value="2">2-я смена</option>
+      <option value="3">3-я смена</option>
+      <option value="4">4-я смена</option>
     </select>
-
-    <button id="sendRequestBtn">Отправить заявку</button>
+    <button id="sendTelegramBtn">Отправить (внутри Telegram)</button>
   </div>
 
-  <!-- Форма FAQ -->
-  <div id="faqForm" class="form-container" style="display: none;">
-    <h2>Задать вопрос</h2>
-    <label>Ваш вопрос:</label>
-    <textarea id="faqQuestion" placeholder="Напишите вопрос"></textarea>
-
-    <button id="sendFAQBtn">Отправить вопрос</button>
+  <div id="outsideForm" class="form-container" style="display:none">
+    <label>Имя:</label>
+    <input type="text" id="nameOutside" />
+    <label>Телефон:</label>
+    <input type="text" id="phoneOutside" />
+    <label>Смена:</label>
+    <select id="shiftOutside">
+      <option value="1">1-я смена</option>
+      <option value="2">2-я смена</option>
+      <option value="3">3-я смена</option>
+      <option value="4">4-я смена</option>
+    </select>
+    <button id="sendOutsideBtn">Отправить (вне Telegram)</button>
   </div>
 
   <script src="script.js"></script>

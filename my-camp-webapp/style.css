@@ -1,56 +1,26 @@
-/* style.css */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
-  background-color: #fafafa;
-  color: #333;
 }
-
-h1 {
-  margin-bottom: 10px;
-}
-
-.tabs {
-  margin-bottom: 20px;
-}
-
 .tabs button {
-  padding: 10px;
   margin-right: 10px;
+  padding: 6px 12px;
   cursor: pointer;
 }
-
 .form-container {
   display: flex;
   flex-direction: column;
-  max-width: 400px;
-  margin-bottom: 30px;
-}
-
-.form-container label {
+  max-width: 300px;
   margin-top: 10px;
 }
-
-.form-container input,
-.form-container select,
-.form-container textarea {
-  padding: 6px;
-  font-size: 14px;
-  margin-top: 5px;
-  width: 100%;
-  box-sizing: border-box;
+label {
+  margin-top: 10px;
 }
-
+input, select {
+  margin-top: 5px;
+  padding: 6px;
+}
 button {
   margin-top: 20px;
   padding: 10px;
-  background: #f44336;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background: #d32f2f;
 }

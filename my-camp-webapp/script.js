@@ -1,106 +1,82 @@
-// script.js (отладочная версия)
-
 window.onload = function() {
-  console.log("=== MiniApp Loaded ===");
-  console.log("User Agent:", navigator.userAgent);
-  console.log("window.Telegram:", window.Telegram);
-  console.log("window.Telegram?.WebApp:", window.Telegram?.WebApp);
+  const tabTelegram = document.getElementById('tabTelegram');
+  const tabOutside = document.getElementById('tabOutside');
 
-  // Дополнительное информативное сообщение (выведем его прямо на страницу)
-  const debugDiv = document.createElement("div");
-  debugDiv.style.backgroundColor = "#ffc";
-  debugDiv.style.padding = "10px";
-  debugDiv.style.margin = "10px 0";
-  debugDiv.style.border = "1px solid #ccc";
-  debugDiv.innerHTML = "<strong>Debug Info:</strong><br>" +
-    "UserAgent: " + navigator.userAgent + "<br>" +
-    "window.Telegram: " + (window.Telegram ? "Yes" : "No") + "<br>" +
-    "window.Telegram.WebApp: " + (window.Telegram?.WebApp ? "Yes" : "No");
+  const telegramForm = document.getElementById('telegramForm');
+  const outsideForm = document.getElementById('outsideForm');
 
-  document.body.insertBefore(debugDiv, document.body.firstChild);
+  const sendTelegramBtn = document.getElementById('sendTelegramBtn');
+  const tgNameField = document.getElementById('tgName');
+  const tgShiftField = document.getElementById('tgShift');
 
-  // Переключатели вкладок
-  const tabRequest = document.getElementById('tabRequest');
-  const tabFAQ = document.getElementById('tabFAQ');
+  const sendOutsideBtn = document.getElementById('sendOutsideBtn');
+  const nameOutsideField = document.getElementById('nameOutside');
+  const phoneOutsideField = document.getElementById('phoneOutside');
+  const shiftOutsideField = document.getElementById('shiftOutside');
 
-  // Форма заявки
-  const requestForm = document.getElementById('requestForm');
-  const sendRequestBtn = document.getElementById('sendRequestBtn');
-  const nameField = document.getElementById('childName');
-  const surnameField = document.getElementById('childSurname');
-  const phoneField = document.getElementById('phone');
-  const shiftSelect = document.getElementById('shift');
-
-  // Форма FAQ
-  const faqForm = document.getElementById('faqForm');
-  const sendFAQBtn = document.getElementById('sendFAQBtn');
-  const faqQuestion = document.getElementById('faqQuestion');
-
-  // Ссылка на объект Telegram.WebApp (если доступен)
+  // Объект Telegram.WebApp, если открыт в Телеграме
   const tg = window.Telegram?.WebApp;
 
-  // Сразу проверим, внутри ли Telegram
-  if (tg) {
-    console.log("✅ Telegram.WebApp найден. Работаем внутри Telegram клиента.");
-  } else {
-    console.log("❌ Telegram.WebApp не найден. Похоже, открыли во внешнем браузере.");
+  // Переключение вкладок
+  function showTelegramForm() {
+    telegramForm.style.display = 'block';
+    outsideForm.style.display = 'none';
+  }
+  function showOutsideForm() {
+    telegramForm.style.display = 'none';
+    outsideForm.style.display = 'block';
   }
 
-  // Функции переключения вкладок
-  function showRequestForm() {
-    requestForm.style.display = 'block';
-    faqForm.style.display = 'none';
-  }
-  function showFAQForm() {
-    requestForm.style.display = 'none';
-    faqForm.style.display = 'block';
-  }
+  // По умолчанию показываем "внутри Telegram" форму
+  showTelegramForm();
 
-  // По умолчанию — форма заявки
-  showRequestForm();
+  tabTelegram.addEventListener('click', showTelegramForm);
+  tabOutside.addEventListener('click', showOutsideForm);
 
-  tabRequest.addEventListener('click', showRequestForm);
-  tabFAQ.addEventListener('click', showFAQForm);
-
-  // Отправка заявки
-  function sendRequestToBot() {
+  // Отправка из Telegram
+  function sendDataTelegram() {
     const data = {
       type: "request",
-      childName: nameField.value,
-      childSurname: surnameField.value,
-      phone: phoneField.value,
-      shift: shiftSelect.value
+      name: tgNameField.value,
+      shift: tgShiftField.value
     };
     const jsonData = JSON.stringify(data);
-    console.log("Попытка отправки заявки:", jsonData);
 
     if (tg) {
-      tg.sendData(jsonData);
+      // Внутри Telegram
+      tg.sendData(jsonData); 
       tg.close();
     } else {
-      console.log("❌ Открыто вне Telegram. Не можем отправить.");
-      alert("Открыто вне Telegram. Для отправки откройте мини-приложение внутри официального клиента Telegram!");
+      // Не показываем ошибку, просто игнорируем или alert
+      alert("Вы не внутри Telegram. Откройте вкладку для вне Телеграма.");
     }
   }
 
-  // Отправка вопроса (FAQ)
-  function sendFAQToBot() {
+  // Отправка вне Telegram (через наш Flask-сервер)
+  async function sendDataOutside() {
     const data = {
-      type: "faq",
-      question: faqQuestion.value
+      name: nameOutsideField.value,
+      phone: phoneOutsideField.value,
+      shift: shiftOutsideField.value
     };
-    const jsonData = JSON.stringify(data);
-    console.log("Попытка отправки вопроса (FAQ):", jsonData);
 
-    if (tg) {
-      tg.sendData(jsonData);
-      tg.close();
-    } else {
-      console.log("❌ Открыто вне Telegram. Не можем отправить.");
-      alert("Открыто вне Telegram. Для отправки откройте мини-приложение в Telegram!");
+    try {
+      const resp = await fetch("http://127.0.0.1:5000/api/send_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await resp.json();
+      if (result.ok) {
+        alert("Заявка отправлена боту!");
+      } else {
+        alert("Ошибка: " + JSON.stringify(result));
+      }
+    } catch (err) {
+      alert("Сетевая ошибка: " + err);
     }
   }
 
-  sendRequestBtn.addEventListener('click', sendRequestToBot);
-  sendFAQBtn.addEventListener('click', sendFAQToBot);
+  sendTelegramBtn.addEventListener('click', sendDataTelegram);
+  sendOutsideBtn.addEventListener('click', sendDataOutside);
 };
